@@ -20,6 +20,16 @@ def survival_demographics():
     # Calculate survival percentage
     df_grouped['Survival_Percentage'] = ((df_grouped['Survived'] / df_grouped['Count']) * 100).round(2)
 
+    # Rename becuase of capital letter issues
+    df_grouped = df_grouped.rename(columns={
+        'Pclass': 'pclass',
+        'Sex': 'sex',
+        'Age_Group': 'age_group',
+        'Survived': 'survived',
+        'Count': 'count',
+        'Survival_Percentage': 'survival_percentage'
+    })
+
     return df_grouped
 
 def visualize_demographic():
@@ -29,20 +39,20 @@ def visualize_demographic():
     df_viz = survival_demographics()
 
     # Create the two categories for visualization analysis.
-    df_viz['Category'] = "Other"
-    df_viz.loc[(df_viz['Pclass'] == 1) & (df_viz['Sex'] == 'male'), 'Category'] = '1st Class Male'
-    df_viz.loc[(df_viz['Pclass'] == 3) & (df_viz['Age_Group'] == 'child'), 'Category'] = '3rd Class Child'
+    df_viz['category'] = "Other"
+    df_viz.loc[(df_viz['pclass'] == 1) & (df_viz['sex'] == 'male'), 'category'] = '1st Class Male'
+    df_viz.loc[(df_viz['pclass'] == 3) & (df_viz['age_group'] == 'child'), 'category'] = '3rd Class Child'
 
     # Filter the Dataframe for the visualization
-    df_viz = df_viz[df_viz['Category'] != "Other"]
+    df_viz = df_viz[df_viz['category'] != "Other"]
 
     # Create the figure
     fig = px.histogram(
             df_viz,  
-             y='Survival_Percentage',
-             x='Category',
+             y='survival_percentage',
+             x='category',
              histfunc='avg',
-             hover_data=['Category'],
+             hover_data=['category'],
              template='plotly_white',
              color_discrete_sequence=px.colors.qualitative.D3
             )
@@ -72,7 +82,7 @@ def family_groups():
 def last_names():
     """Creates a Dataframe with survival statistics by last name"""
 
-     # Read in titanic dataset
+     # Read in titanic datasets
     df = pd.read_csv('https://raw.githubusercontent.com/leontoddjohnson/datasets/main/data/titanic.csv')
 
     # Create a last name column
@@ -80,7 +90,7 @@ def last_names():
     df['Count'] = 1
 
     # Group passengers by last name and compute total count
-    df_groupby = df.groupby('last_name').agg(total_count=('Count', 'sum'))
+    df_groupby = df.groupby('last_name')['Count'].sum()
 
     return df_groupby
 
@@ -107,7 +117,9 @@ def visualize_families():
     df_viz_last_names['group'] = 'Last_Names'
     df_viz_family_size['group'] = 'Family_Size'
 
-    df1 = df_viz_last_names[['group', 'total_count']].rename(columns={'total_count': 'family_size'})
+    df1 = df_viz_last_names.reset_index()        # converts Series to DataFrame
+    df1 = df1.rename(columns={df1.columns[1]: 'family_size'})  # rename values column
+    df1['group'] = 'Last_Names'
     df2 = df_viz_family_size[['group', 'family_size']]
 
     df_all = pd.concat([df1, df2], ignore_index=True)
