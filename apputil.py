@@ -12,7 +12,7 @@ def survival_demographics():
     df['Count'] = 1
 
     # Group the passangers by class, sex, and group
-    df_grouped = df.groupby(['Pclass', 'Sex', 'Age_Group']).agg({
+    df_grouped = df.groupby(['Pclass', 'Sex', 'Age_Group'], observed=False).agg({
         'Survived': 'sum',
         'Count': 'sum'
     }).reset_index()
@@ -26,7 +26,7 @@ def survival_demographics():
         'Sex': 'sex',
         'Age_Group': 'age_group',
         'Survived': 'survived',
-        'Count': 'count',
+        'Count': 'n_survivors',
         'Survival_Percentage': 'survival_percentage'
     })
 
