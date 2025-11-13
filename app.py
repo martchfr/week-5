@@ -7,7 +7,7 @@ df = pd.read_csv('https://raw.githubusercontent.com/leontoddjohnson/datasets/mai
 
 st.write(
 '''
-# Titanic Visualization 1
+# Did men in the first class have a higher survival rate than children in the third class?
 
 '''
 )
@@ -17,18 +17,9 @@ st.plotly_chart(fig1, use_container_width=True)
 
 st.write(
 '''
-# Titanic Visualization 2
+# How do family sizes compare on the Titanic as reported by last names vs. calculated based on family size?
 '''
 )
 # Generate and display the figure
 fig2 = visualize_families()
 st.plotly_chart(fig2, use_container_width=True)
-
-st.write(
-'''
-# Titanic Visualization Bonus
-'''
-)
-# Generate and display the figure
-fig3 = visualize_family_size()
-st.plotly_chart(fig3, use_container_width=True)
