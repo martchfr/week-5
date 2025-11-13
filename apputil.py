@@ -7,8 +7,11 @@ def survival_demographics():
     # Read in titanic dataset
     df = pd.read_csv('https://raw.githubusercontent.com/leontoddjohnson/datasets/main/data/titanic.csv')
 
-    # Use pd.cut to create age groups based on the Age column and a count column
+    # Use pd.cut to create age groups based on the Age column and a count column. Redefine prior columns as categorical.
     df['Age_Group'] = pd.cut(df["Age"], bins = [0, 12, 20, 60, 120], labels = ["child", "teen", "adult", "senior"])
+    df['Sex'] = pd.Categorical(df['Sex'], categories=['male', 'female'])
+    df['Age_Group'] = pd.Categorical(df['Age_Group'], categories=['child', 'teen', 'adult', 'senior'])
+
     df['Count'] = 1
 
     # Group the passangers by class, sex, and group
