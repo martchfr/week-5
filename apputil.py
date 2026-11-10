@@ -12,14 +12,14 @@ def survival_demographics():
 
     # Group the passangers by class, sex, and group
     df_grouped = df.groupby(['Pclass', 'Sex', 'Age_Group']).agg(
-        Survived_Count=('Survived','sum'),
-        Passenger_Count=('PassengerId', 'count')
+        n_survived=('Survived','sum'),
+        n_passengers=('PassengerId', 'count')
     ).reset_index()
 
-    # Calculate survival percentage
-    df_grouped['Survival_Percentage'] = ((df_grouped['Survived_Count'] / df_grouped['Passenger_Count']) * 100).round(2)
+    # Calculate survival_rate
+    df_grouped['survival_rate'] = ((df_grouped['n_survived'] / df_grouped['n_passengers']) * 100).round(2)
     
-    df_grouped = df_grouped.sort_values(by='Survival_Percentage', ascending=False)
+    df_grouped = df_grouped.sort_values(by='survival_rate', ascending=False)
 
     return df_grouped
 
@@ -40,12 +40,12 @@ def visualize_demographic():
 
     # Group by Category and Get Summative Numbers
     df_viz = df_viz.groupby('Category', as_index = False).agg({
-        'Survived_Count' : "sum",
-        'Passenger_Count' : "sum"
+        'n_survived' : "sum",
+        'n_passengers' : "sum"
     })
 
     # Calculate Survival Rate
-    df_viz["Survival Percentage"] = round((df_viz["Survived_Count"]/df_viz["Passenger_Count"] * 100), 2)
+    df_viz["survival_rate"] = round((df_viz["n_survived"]/df_viz["n_passengers"] * 100), 2)
 
     # Create the figure
     fig = px.bar(
@@ -53,13 +53,13 @@ def visualize_demographic():
         title='Was surviving the Titanic Fair?',
         subtitle='Comparing survival rates for 1st class men, 3rd class children, and 3rd class men.',
             x='Category',
-            y='Survival Percentage',
-            text='Survival Percentage',
+            y='survival_rate',
+            text='survival_rate',
             hover_data={
             'Category': True,
-            'Survived_Count': True,
-            'Passenger_Count': True,
-            'Survival Percentage': ":.1f"
+            'n_survived': True,
+            'n_passengers': True,
+            'survival_rate': ":.1f"
         },
             template='simple_white',
             color_discrete_sequence=px.colors.qualitative.D3
